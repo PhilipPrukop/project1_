@@ -16,4 +16,3 @@ Rough Breakdown of Tasks -
 Step 1 - get the api's to work
 Step 2 - get firebase to work
 Step 3 - UI
-Step 4 - 
