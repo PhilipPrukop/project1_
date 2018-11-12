@@ -135,20 +135,28 @@ $(document).ready(function() {
         var select = document.getElementById("subSec");
         select.appendChild(option);
     }
-
-
-
-
     
-    function myFunction() {
-        var x = document.getElementById("state").value;
-        document.getElementById("stateDemo").innerHTML = usStates[x].name;
-        console.log(usStates[x].name)
-        var y = document.getElementById("ntee").value;
-        document.getElementById("nteeDemo").innerHTML = charityCategory[y].ntee;
-        console.log(charityCategory[y].nteeID)
-        var z = document.getElementById("subSec").value;
-        document.getElementById("subSecDemo").innerHTML = subSec[z].taxSec;
-        console.log(subSec[z].tsID)
-    }
+    $(document).ready(function() {
+
+        //on click, set searchTerm's value to user input
+        var searchTerm;
+        $("#searchBtn").click(function(){
+            searchTerm = $("#searchBar").val();
+                console.log(searchTerm);
+            //get selector values if user used filter
+            var x = document.getElementById("state").value;
+                console.log(usStates[x].name)
+            var y = document.getElementById("ntee").value;
+                console.log(charityCategory[y].nteeID)
+            var z = document.getElementById("subSec").value;
+                console.log(subSec[z].tsID)
+            
+            
+        });
+    
+    
+    
+    });
+    
+
 })
