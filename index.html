@@ -28,13 +28,13 @@
         <input id="searchBar" type="text" class="form-control" placeholder="Enter search keywords..." aria-label="searchBar" aria-describedby="button-addon4">
         <div class="input-group-append" id="button-addon4">
           <button id="searchBtn" class="btn btn-outline-secondary" type="button">Search</button>
-          <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#advSearchOpt" aria-expanded="false" aria-controls="advSearchOpt">Filter</button>
+          <!-- <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#advSearchOpt" aria-expanded="false" aria-controls="advSearchOpt">Filter</button> -->
         </div>    
     </div>
 
     <!--collapsable advanced search options-->
-    <div id="collapsedOpt"></div>
-    <div class="collapse" id="advSearchOpt">
+    <!-- <div id="collapsedOpt"></div>
+    <div class="collapse" id="advSearchOpt"> -->
         <div class="card card-body">
             
           <div for="state">Select State</div>
@@ -52,6 +52,25 @@
 
     <!--output results here-->
     <div>Results</div>
+
+
+    <!--Modal-->
+    <div class="modal fade" id="selectorValidation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title">Oops!</h4>
+            </div>
+            <div class="modal-body" id="modalMsg">
+              <p>Please use the dropdown menu to filter your search.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!--end of modal-->
 
 </body>
 </html>
