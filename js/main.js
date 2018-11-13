@@ -14,7 +14,7 @@ function initialSearch(searchT, state, category){
   searchCategory = category;
 
 
-  queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state=" + searchState;
+  queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
   // queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state=" + searchState + "&ntee=" + searchCategory;
 
   console.log(queryURL);
@@ -28,7 +28,7 @@ function initialSearch(searchT, state, category){
         organizationName = response.organizations[i].name;
         console.log(einNumber);
         console.log(organizationName);
-        console.log(response.organizations[i].state);
+        console.log(response.organizations[i].subseccd);
         //output result to html
         $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' id='" + einNumber +"'>" + organizationName + "</button>")
     }
@@ -186,13 +186,14 @@ function initialSearch(searchT, state, category){
                 console.log(searchTerm);
             //get selector values if user used filter
             x = document.getElementById("state").value;
-                console.log(usStates[x].name);
-                searchState = usStates[x].name;
+                console.log(usStates[x].abbreviation);
+                searchState = usStates[x].abbreviation;
             y = document.getElementById("ntee").value;
                 console.log(charityCategory[y].nteeID);
                 searchCategory = charityCategory[y].nteeID;
             z = document.getElementById("subSec").value;
                 console.log(subSec[z].tsID);
+                searchSubSec = subSec[z].tsID;
             //user input validation
             if (x == 0 && y == 0) {
                 $("#modalMsg").html("<p>Please select a State and a Category!</p>");
