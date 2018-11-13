@@ -1,3 +1,41 @@
+var getClickedEin;
+
+function einNumberSearch(ein){
+    queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/organizations/" + ein + ".json";
+    $.ajax({
+    url: queryURL,
+    method: "GET"
+    }).then(function(response) {
+ 
+      console.log(response.organization.name);
+ 
+      for(i=0; i < response.filings_with_data.length; i++){
+        console.log(response.filings_with_data[i].tax_prd_yr);
+        console.log(response.filings_with_data[i].pdf_url);
+      };
+ 
+    });
+ };
+
+ function getRating(ein){
+    var queryURL = "https://api.data.charitynavigator.org/v2/Organizations/" + ein + "?app_id=ceaf5661&app_key=1775b257fabc9f4b810868930ac20f80";
+    $.ajax({
+        url: queryURL,
+        method: 'GET',
+    }).then(function (results) {
+        // console.log(results);
+        console.log(results.currentRating.score);
+        console.log(results.websiteURL);
+
+    })
+       .fail(function(err) {
+           throw err;
+           });
+
+
+
+};
+
 $(document).ready(function() {
 var searchName;
 var searchState;
@@ -6,7 +44,15 @@ var einNumber = 0;
 var queryURL;
 var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
 var organizationName;
-    
+
+getClickedEin = function(einNumber){
+    var einNumber;
+    console.log(einNumber);
+    return einNumber;
+    //einNumberSearch(einNumber);
+};
+ 
+   
 function initialSearch(searchT, state, category){
 
   searchName = searchT;
@@ -30,11 +76,15 @@ function initialSearch(searchT, state, category){
         console.log(organizationName);
         console.log(response.organizations[i].subseccd);
         //output result to html
-        $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' id='" + einNumber +"'>" + organizationName + "</button>")
+        $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
     }
     });
 
-};
+    };
+
+    
+
+     
 
 
     var usStates = [
