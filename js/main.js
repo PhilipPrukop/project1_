@@ -1,3 +1,4 @@
+$(document).ready(function() {
 var searchName;
 var searchState;
 var searchCategory;
@@ -22,14 +23,20 @@ function initialSearch(searchT, state, category){
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-        einNumber = response.organizations[0].ein;
-        organizationName = response.organizations[0].name;
+    for (var i = 0; i < 10; i++){
+        einNumber = response.organizations[i].ein;
+        organizationName = response.organizations[i].name;
         console.log(einNumber);
         console.log(organizationName);
+        console.log(response.organizations[i].state);
+        //output result to html
+        $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' id='" + einNumber +"'>" + organizationName + "</button>")
+    }
     });
+
 };
 
-$(document).ready(function() {
+
     var usStates = [
         { name: '', abbreviation: ''},
         { name: 'ALABAMA', abbreviation: 'AL'},
@@ -197,6 +204,8 @@ $(document).ready(function() {
                 $("#modalMsg").html("<p>Please select a State!</p>");
                 $("#selectorValidation").modal("show");
             } else {
+                //clears results div first
+                $("#resultDisplay").empty();
                 //run API search function here!!
                 initialSearch(searchTerm, searchState, searchCategory);
             }
