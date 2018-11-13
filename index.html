@@ -31,30 +31,32 @@
           <!-- <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#advSearchOpt" aria-expanded="false" aria-controls="advSearchOpt">Filter</button> -->
         </div>    
     </div>
+    <!--end of search bar-->
 
-    <!--collapsable advanced search options-->
-    <!-- <div id="collapsedOpt"></div>
-    <div class="collapse" id="advSearchOpt"> -->
-        <div class="card card-body">
+
+    <!--group of dropdown options-->
+    <div class="card card-body">
             
-          <div for="state">Select State</div>
-          <select class="form-control" id="state"></select>
+        <div for="state">Select State</div>
+        <select class="form-control" id="state"></select>
 
-          <div for="Category">Select Category</div>
-          <select class="form-control" id="ntee"></select>
+        <div for="Category">Select Category</div>
+        <select class="form-control" id="ntee"></select>
         
-          <div for="subSec">Select Sub Section</div>
-          <select class="form-control" id="subSec"></select>
+        <div for="subSec">Select Sub Section</div>
+        <select class="form-control" id="subSec"></select>
 
-        </div>
-     
     </div>
+    <!--end of group of dropdown options-->
+     
 
     <!--output results here-->
     <div>Results</div>
+        <div class="list-group" id="resultDisplay">
+            <button type="button" class="list-group-item list-group-item-action">test</button>
+        </div>
 
-
-    <!--Modal-->
+    <!--Alert Modal-->
     <div class="modal fade" id="selectorValidation">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -70,7 +72,7 @@
             </div>
         </div>
     </div>
-    <!--end of modal-->
+    <!--end of alert modal-->
 
 </body>
 </html>
