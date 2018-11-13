@@ -4,7 +4,6 @@ var searchCategory;
 var einNumber = 0;
 var queryURL;
 var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
-var queryURL;
 var organizationName;
     
 function initialSearch(searchT, state, category){
@@ -23,12 +22,11 @@ function initialSearch(searchT, state, category){
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-    
         einNumber = response.organizations[0].ein;
         organizationName = response.organizations[0].name;
         console.log(einNumber);
         console.log(organizationName);
-  });
+    });
 };
 
 $(document).ready(function() {
@@ -177,7 +175,7 @@ $(document).ready(function() {
         var y;
         var z;
         $("#searchBtn").click(function(){
-            searchTerm = $("#searchBar").val();
+            searchTerm = $("#searchBar").val().replace(/ /g,'%22'); //user input validation that replaces space with %22
                 console.log(searchTerm);
             //get selector values if user used filter
             x = document.getElementById("state").value;
