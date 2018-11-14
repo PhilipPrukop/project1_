@@ -60,6 +60,7 @@ body {
 .header a.logo {
     font-size: 50px;
     font-weight: bold;
+    text-align: center;
   }
 
 /* Change the background color on mouse-over */
