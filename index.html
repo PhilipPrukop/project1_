@@ -58,22 +58,39 @@
      
 
     <!--Alert Modal-->
-    <div class="modal fade" id="displayModal">
+    <div class="modal fade" id="selectorValidation">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title">Oops!</h4>
-            </div>
-            <div class="modal-body" id="modalMsg">
-              <p>Please use the dropdown menu to filter your search.</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-            </div>
+                <h4 class="modal-title" id="modalTitle">Oops!</h4>
+                </div>
+                <div class="modal-body" id="modalMsg">
+                <!--modal message placeholder here-->
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
     <!--end of alert modal-->
+
+    <!--display detailed results modal-->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="detailedResults" aria-hidden="true" id="displayDetails">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="detailedResultsTitle"></h4>
+                </div>
+                <div class="modal-body" id="detailedResultsMsg">
+                <!--modal message placeholder here-->
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
