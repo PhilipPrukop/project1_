@@ -23,19 +23,26 @@ function einNumberSearch(ein){
         //display details on targeted modal
         $("#displayDetails").modal("show");
         $("#detailedResultsTitle").html(response.organization.name);
-        $("#detailedResultsMsg").html("<h5>placeholder</h5>")
-        $("#detailedResultsMsg").append("<h5>Rating</h5><p>" + "rating here" + "</p>");
-        $("#detailedResultsMsg").append("<a href='" + "#" + "' target='_blank'>Go to this organization's website</a></br>");
+        $("#detailedResultsMsg").html("<h5>Placeholder</h5>")
+        $("#detailedResultsMsg").append("<h5>Rating</h5><p id='ratingHere'></p>");
+        
         $("#detailedResultsMsg").append("<h5>Tax Filing PDF: </h5>");
         
-        //populate tax year buttons with links lead to respective pdf file
-        for(i=0; i < response.filings_with_data.length; i++){
-            $("#detailedResultsMsg").append("<a href='" + response.filings_with_data[i].pdf_url +"' target='_bland' class='btn btn-outline-info' role='button' aria-pressed='true'>" + response.filings_with_data[i].tax_prd_yr + "</a>");
-            console.log(response.filings_with_data[i].tax_prd_yr);
-            console.log(response.filings_with_data[i].pdf_url);
-        };
-      
+        //check to see if there is any pdf at all
+        if(response.filings_with_data.length > 0){
+            //populate tax year buttons with links lead to respective pdf file
+            for(i=0; i < response.filings_with_data.length; i++){
+                $("#detailedResultsMsg").append("<a href='" + response.filings_with_data[i].pdf_url +"' target='_bland' class='btn btn-outline-info' role='button' aria-pressed='true'>" + response.filings_with_data[i].tax_prd_yr + "</a>");
+                console.log(response.filings_with_data[i].tax_prd_yr);
+                console.log(response.filings_with_data[i].pdf_url);
+            };
+        } else {
+            //let user know there is no pdf found
+            $("#detailedResultsMsg").append("<p>No Tax pdfs were found!</p>");
+        }
     });
+    //call getRating function to populate rating and url link
+    getRating(ein);
  };
 
  function getRating(ein){
@@ -47,14 +54,13 @@ function einNumberSearch(ein){
         // console.log(results);
         console.log(results.currentRating.score);
         console.log(results.websiteURL);
+        $("#ratingHere").html(results.currentRating.score);
+        $("#detailedResultsMsg").append("</br><a href='" + results.websiteURL + "' target='_blank'>Visit this organization's website</a></br>");
 
     })
        .fail(function(err) {
            throw err;
            });
-
-
-
 };
 
 getClickedEin = function(einNumber){
@@ -67,30 +73,36 @@ getClickedEin = function(einNumber){
  
    
 function initialSearch(searchT, state, category){
-
-  searchName = searchT;
-  searchState = state;
-  searchCategory = category;
-
-
-  queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
-  // queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state=" + searchState + "&ntee=" + searchCategory;
-
-  console.log(queryURL);
-
-  $.ajax({
-    url: queryURL,
-    method: "GET"
-  }).then(function(response) {
-    for (var i = 0; i < 10; i++){
-        einNumber = response.organizations[i].ein;
-        organizationName = response.organizations[i].name;
-        console.log(einNumber);
-        console.log(organizationName);
-        console.log(response.organizations[i].subseccd);
-        //output result to html
-        $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
+    var searchName = searchT;
+    var searchState = state;
+    var searchCategory = category;
+    function populateList(response) {
+        for (var i = 0; i <= 20; i++){
+            einNumber = response.organizations[i].ein;
+            organizationName = response.organizations[i].name;
+            console.log(einNumber);
+            console.log(organizationName);
+            console.log(response.organizations[i].subseccd);
+            //output result to html
+            $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
+        };
     }
+
+    queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
+
+    console.log(queryURL);
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function(response) {
+        //only display up to 20 results on the page
+        if (response.total_results >= 20) {
+            $("#numOfResults").html("Displaying 20 of " + response.total_results + " results. <p>Please be more specific with your search term to narrow down the results!</p>")
+            populateList(response);
+        } else {
+            populateList(response);
+        }
     });
 
     };
