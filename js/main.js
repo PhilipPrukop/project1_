@@ -1,5 +1,16 @@
 var getClickedEin;
 
+
+
+$(document).ready(function() {
+var searchName;
+var searchState;
+var searchCategory;
+var einNumber = 0;
+var queryURL;
+var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
+var organizationName;
+
 function einNumberSearch(ein){
     queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/organizations/" + ein + ".json";
     $.ajax({
@@ -7,13 +18,16 @@ function einNumberSearch(ein){
     method: "GET"
     }).then(function(response) {
  
-      console.log(response.organization.name);
+        console.log(response.organization.name);
  
-      for(i=0; i < response.filings_with_data.length; i++){
+        for(i=0; i < response.filings_with_data.length; i++){
         console.log(response.filings_with_data[i].tax_prd_yr);
         console.log(response.filings_with_data[i].pdf_url);
-      };
- 
+        };
+
+    //display details on targeted modal
+
+      
     });
  };
 
@@ -36,20 +50,12 @@ function einNumberSearch(ein){
 
 };
 
-$(document).ready(function() {
-var searchName;
-var searchState;
-var searchCategory;
-var einNumber = 0;
-var queryURL;
-var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
-var organizationName;
-
 getClickedEin = function(einNumber){
     var einNumber;
     console.log(einNumber);
-    return einNumber;
-    //einNumberSearch(einNumber);
+    
+    einNumberSearch(einNumber);
+    //$("#displayModal").show();
 };
  
    
@@ -247,13 +253,13 @@ function initialSearch(searchT, state, category){
             //user input validation
             if (x == 0 && y == 0) {
                 $("#modalMsg").html("<p>Please select a State and a Category!</p>");
-                $("#selectorValidation").modal("show");
+                $("#displayModal").modal("show");
             } else if (y == 0) {
                 $("#modalMsg").html("<p>Please select a Category!</p>");
-                $("#selectorValidation").modal("show");
+                $("#displayModal").modal("show");
             } else if (x == 0) {
                 $("#modalMsg").html("<p>Please select a State!</p>");
-                $("#selectorValidation").modal("show");
+                $("#displayModal").modal("show");
             } else {
                 //clears results div first
                 $("#resultDisplay").empty();
