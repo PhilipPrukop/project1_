@@ -72,40 +72,42 @@ getClickedEin = function(einNumber){
 };
  
    
+
 function initialSearch(searchT, state, category){
-    var searchName = searchT;
-    var searchState = state;
-    var searchCategory = category;
-    function populateList(response) {
-        for (var i = 0; i <= 20; i++){
-            einNumber = response.organizations[i].ein;
-            organizationName = response.organizations[i].name;
-            console.log(einNumber);
-            console.log(organizationName);
-            console.log(response.organizations[i].subseccd);
-            //output result to html
-            $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
-        };
-    }
+   var searchName = searchT;
+   var searchState = state;
+   var searchCategory = category;
+   function populateList(response) {
+       for (var i = 0; i <= 20; i++){
+           einNumber = response.organizations[i].ein;
+           organizationName = response.organizations[i].name;
+           console.log(einNumber);
+           console.log(organizationName);
+           console.log(response.organizations[i].subseccd);
+           //output result to html
+           $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
+       };
+   }
 
-    queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
+   queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
 
-    console.log(queryURL);
+   console.log(queryURL);
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function(response) {
-        //only display up to 20 results on the page
-        if (response.total_results >= 20) {
-            $("#numOfResults").html("Displaying 20 of " + response.total_results + " results. <p>Please be more specific with your search term to narrow down the results!</p>")
-            populateList(response);
-        } else {
-            populateList(response);
-        }
-    });
+   $.ajax({
+       url: queryURL,
+       method: "GET"
+   }).then(function(response) {
+       //only display up to 20 results on the page
+       if (response.total_results >= 20) {
+           $("#numOfResults").html("Displaying 20 of " + response.total_results + " results. <p>Please be more specific with your search term to narrow down the results!</p>")
+           populateList(response);
+       } else {
+           $("#numOfResults").html("Displaying " + response.total_results + " of " + response.total_results + " results.")
+           populateList(response);
+       }
+   });
 
-    };
+};
 
     
 
