@@ -19,14 +19,21 @@ function einNumberSearch(ein){
     }).then(function(response) {
  
         console.log(response.organization.name);
- 
+
+        //display details on targeted modal
+        $("#displayDetails").modal("show");
+        $("#detailedResultsTitle").html(response.organization.name);
+        $("#detailedResultsMsg").html("<h5>placeholder</h5>")
+        $("#detailedResultsMsg").append("<h5>Rating</h5><p>" + "rating here" + "</p>");
+        $("#detailedResultsMsg").append("<a href='" + "#" + "' target='_blank'>Go to this organization's website</a></br>");
+        $("#detailedResultsMsg").append("<h5>Tax Filing PDF: </h5>");
+        
+        //populate tax year buttons with links lead to respective pdf file
         for(i=0; i < response.filings_with_data.length; i++){
-        console.log(response.filings_with_data[i].tax_prd_yr);
-        console.log(response.filings_with_data[i].pdf_url);
+            $("#detailedResultsMsg").append("<a href='" + response.filings_with_data[i].pdf_url +"' target='_bland' class='btn btn-outline-info' role='button' aria-pressed='true'>" + response.filings_with_data[i].tax_prd_yr + "</a>");
+            console.log(response.filings_with_data[i].tax_prd_yr);
+            console.log(response.filings_with_data[i].pdf_url);
         };
-
-    //display details on targeted modal
-
       
     });
  };
@@ -55,7 +62,7 @@ getClickedEin = function(einNumber){
     console.log(einNumber);
     
     einNumberSearch(einNumber);
-    //$("#displayModal").show();
+    
 };
  
    
@@ -253,13 +260,13 @@ function initialSearch(searchT, state, category){
             //user input validation
             if (x == 0 && y == 0) {
                 $("#modalMsg").html("<p>Please select a State and a Category!</p>");
-                $("#displayModal").modal("show");
+                $("#selectorValidation").modal("show");
             } else if (y == 0) {
                 $("#modalMsg").html("<p>Please select a Category!</p>");
-                $("#displayModal").modal("show");
+                $("#selectorValidation").modal("show");
             } else if (x == 0) {
                 $("#modalMsg").html("<p>Please select a State!</p>");
-                $("#displayModal").modal("show");
+                $("#selectorValidation").modal("show");
             } else {
                 //clears results div first
                 $("#resultDisplay").empty();
