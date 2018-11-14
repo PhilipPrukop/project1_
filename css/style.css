@@ -1,7 +1,6 @@
 body {
     background-image: url("https://images.unsplash.com/photo-1520034475321-cbe63696469a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=2efbd126389f0ea2ce0db8c507919e1b&auto=format&fit=crop&w=1050&q=80");
     background-position: center;
-    background-repeat: no-repeat;
     background-size: cover;
     margin: 50px;
     opacity: 0.93;
@@ -10,6 +9,11 @@ body {
 }
 
 .card {
+    background-color: white;
+}
+
+#numOfResults {
+    color: black;
     background-color: white;
 }
 
@@ -37,8 +41,7 @@ body {
     background-color: white;
     padding: 20px 10px;
     text-align: center;
-
-  }
+}
 
 
 /* Style the header links */
@@ -95,4 +98,9 @@ body {
     .header-right {
         float: none;
       }
+
+    .header a.logo {
+        font-size: 33px;
     }
+
+}
