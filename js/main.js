@@ -1,118 +1,118 @@
 var getClickedEin;
-
-
-
 $(document).ready(function() {
-var searchName;
-var searchState;
-var searchCategory;
-var einNumber = 0;
-var queryURL;
-var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
-var organizationName;
+    var searchState;
+    var searchCategory;
+    var einNumber = 0;
+    var searchTerm;
+    var x;
+    var y;
+    var z;
+    var queryURL;
+    var crossOriginURL = "https://cors-ut-bootcamp.herokuapp.com/";
 
-function einNumberSearch(ein){
-    queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/organizations/" + ein + ".json";
-    $.ajax({
-    url: queryURL,
-    method: "GET"
-    }).then(function(response) {
- 
-        console.log(response.organization.name);
-
-        //display details on targeted modal
-        $("#displayDetails").modal("show");
-        $("#detailedResultsTitle").html(response.organization.name);
-        $("#detailedResultsMsg").html("<h5>Placeholder</h5>")
-        $("#detailedResultsMsg").append("<h5>Rating</h5><p id='ratingHere'></p>");
-        
-        $("#detailedResultsMsg").append("<h5>Tax Filing PDF: </h5>");
-        
-        //check to see if there is any pdf at all
-        if(response.filings_with_data.length > 0){
-            //populate tax year buttons with links lead to respective pdf file
-            for(i=0; i < response.filings_with_data.length; i++){
-                $("#detailedResultsMsg").append("<a href='" + response.filings_with_data[i].pdf_url +"' target='_bland' class='btn btn-outline-info' role='button' aria-pressed='true'>" + response.filings_with_data[i].tax_prd_yr + "</a>");
-                console.log(response.filings_with_data[i].tax_prd_yr);
-                console.log(response.filings_with_data[i].pdf_url);
-            };
+    //on click, set searchTerm's value to user input
+    $("#searchBtn").click(function(){
+    searchTerm = $("#searchBar").val().replace(/ /g,'%22'); //user input validation that replaces space with %22            
+        //get selector values if user used filter
+        x = document.getElementById("state").value;                
+        searchState = usStates[x].abbreviation;
+        y = document.getElementById("ntee").value;                
+        searchCategory = charityCategory[y].nteeID;
+        z = document.getElementById("subSec").value;                
+        searchSubSec = subSec[z].tsID;
+        //user input validation
+        if (x == 0 && y == 0) {
+            $("#modalMsg").html("<p>Please select a State and a Category!</p>");
+            $("#selectorValidation").modal("show");
+        } else if (y == 0) {
+            $("#modalMsg").html("<p>Please select a Category!</p>");
+            $("#selectorValidation").modal("show");
+        } else if (x == 0) {
+            $("#modalMsg").html("<p>Please select a State!</p>");
+            $("#selectorValidation").modal("show");
         } else {
-            //let user know there is no pdf found
-            $("#detailedResultsMsg").append("<p>No Tax pdfs were found!</p>");
-        }
+            //clears results div first
+            $("#resultDisplay").empty();
+            //run API search function here!!
+            initialSearch(searchTerm, searchState, searchCategory);
+        };
     });
-    //call getRating function to populate rating and url link
-    getRating(ein);
- };
 
- function getRating(ein){
-    var queryURL = "https://api.data.charitynavigator.org/v2/Organizations/" + ein + "?app_id=ceaf5661&app_key=1775b257fabc9f4b810868930ac20f80";
-    $.ajax({
+    function initialSearch(searchT, state, category){
+        var searchName = searchT;
+        var searchState = state;
+        var searchCategory = category;
+        function populateList(response) {
+            for (var i = 0; i <= 20; i++){
+            einNumber = response.organizations[i].ein;
+            organizationName = response.organizations[i].name;            
+            //output result to html by creating a list of clickable buttons that calls getClickedEin function upon user click
+            $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
+            };
+        }
+        queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response) {
+        //only display up to 20 results on the page
+            if (response.total_results >= 20) {
+                $("#numOfResults").html("Displaying 20 of " + response.total_results + " results. <p>Please be more specific with your search term to narrow down the results!</p>")
+                populateList(response);
+            } else {
+                $("#numOfResults").html("Displaying " + response.total_results + " of " + response.total_results + " results.")
+                populateList(response);
+            }
+        });
+    };
+
+    getClickedEin = function(einNumber){        
+        einNumberSearch(einNumber);    
+    };
+
+    function einNumberSearch(ein){
+        queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/organizations/" + ein + ".json";
+        $.ajax({
         url: queryURL,
-        method: 'GET',
-    }).then(function (results) {
-        // console.log(results);
-        console.log(results.currentRating.score);
-        console.log(results.websiteURL);
-        $("#ratingHere").html(results.currentRating.score);
-        $("#detailedResultsMsg").append("</br><a href='" + results.websiteURL + "' target='_blank'>Visit this organization's website</a></br>");
+        method: "GET"
+        }).then(function(response) {    
+            //display details on targeted modal
+            $("#displayDetails").modal("show");
+            $("#detailedResultsTitle").html(response.organization.name);            
+            $("#detailedResultsMsg").html("<h5>Current Rating</h5><p id='ratingHere'>Ratings not available.</p>");            
+            $("#detailedResultsMsg").append("<h5>Tax Filing PDF: </h5>");            
+            //check to see if there is any pdf at all
+            if(response.filings_with_data.length > 0){
+                //populate tax year buttons with links lead to respective pdf file
+                for(i=0; i < response.filings_with_data.length; i++){
+                    $("#detailedResultsMsg").append("<a href='" + response.filings_with_data[i].pdf_url +"' target='_bland' class='btn btn-outline-info' role='button' aria-pressed='true'>" + response.filings_with_data[i].tax_prd_yr + "</a>");
+                };
+            } else {
+                //let user know there is no pdf found
+                $("#detailedResultsMsg").append("<p>No Tax pdfs were found!</p>");
+            }
+        });
+        //call getRating function to populate rating and url link
+        getRating(ein);
+    };
 
-    })
-       .fail(function(err) {
-           throw err;
-           });
-};
-
-getClickedEin = function(einNumber){
-    var einNumber;
-    console.log(einNumber);
-    
-    einNumberSearch(einNumber);
-    
-};
- 
-   
-
-function initialSearch(searchT, state, category){
-   var searchName = searchT;
-   var searchState = state;
-   var searchCategory = category;
-   function populateList(response) {
-       for (var i = 0; i <= 20; i++){
-           einNumber = response.organizations[i].ein;
-           organizationName = response.organizations[i].name;
-           console.log(einNumber);
-           console.log(organizationName);
-           console.log(response.organizations[i].subseccd);
-           //output result to html
-           $("#resultDisplay").append("<button type='button' class='list-group-item list-group-item-action' onClick='getClickedEin(" + einNumber + ")' id='" + einNumber +"'>" + organizationName + "</button>")
-       };
-   }
-
-   queryURL = crossOriginURL + "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchName + "&state%5Bid%5D=" + searchState + "&ntee%5Bid%5D=" + searchCategory + "&c_code%5Bid%5D=" + searchSubSec;
-
-   console.log(queryURL);
-
-   $.ajax({
-       url: queryURL,
-       method: "GET"
-   }).then(function(response) {
-       //only display up to 20 results on the page
-       if (response.total_results >= 20) {
-           $("#numOfResults").html("Displaying 20 of " + response.total_results + " results. <p>Please be more specific with your search term to narrow down the results!</p>")
-           populateList(response);
-       } else {
-           $("#numOfResults").html("Displaying " + response.total_results + " of " + response.total_results + " results.")
-           populateList(response);
-       }
-   });
-
-};
-
-    
-
-     
-
+    function getRating(ein){
+        var queryURL = "https://api.data.charitynavigator.org/v2/Organizations/" + ein + "?app_id=ceaf5661&app_key=1775b257fabc9f4b810868930ac20f80";
+        $.ajax({
+            url: queryURL,
+            method: 'GET',
+        }).then(function (results) {
+            if(results.websiteURL != null){
+                $("#ratingHere").html(results.currentRating.score);
+                $("#detailedResultsMsg").append("</br><a href='" + results.websiteURL + "' target='_blank'>Visit this organization's website</a></br>");
+            } else {
+                $("#ratingHere").html("Ratings not available.");
+            };
+        })
+        .fail(function(err) {
+            throw err;
+        });
+    };       
 
     var usStates = [
         { name: '', abbreviation: ''},
@@ -183,9 +183,7 @@ function initialSearch(searchT, state, category){
         option.value = i;
         var select = document.getElementById("state");
         select.appendChild(option);
-    }
-
-
+    };
 
     var charityCategory = [
         { ntee: '', nteeID: ''},
@@ -198,8 +196,7 @@ function initialSearch(searchT, state, category){
         { ntee: 'Public, Societal Benefit', nteeID: '7'},
         { ntee: 'Religion Related', nteeID: '8'},
         { ntee: 'Mutual/Membership Benefit', nteeID: '9'},
-        { ntee: 'Unknown, Unclassified', nteeID: '10'},
-        
+        { ntee: 'Unknown, Unclassified', nteeID: '10'},        
     ];
 
     for(var i = 0;i<charityCategory.length;i++){
@@ -208,8 +205,7 @@ function initialSearch(searchT, state, category){
         option.value = i;
         var select = document.getElementById("ntee");
         select.appendChild(option);
-    }
-
+    };
 
     var subSec = [
         { taxSec: '', tsID: ''},
@@ -239,8 +235,7 @@ function initialSearch(searchT, state, category){
         { taxSec: '501(c)(26)', tsID: '26'},
         { taxSec: '501(c)(27)', tsID: '27'},
         { taxSec: '501(c)(28)', tsID: '28'},
-        { taxSec: '4947(a)(1)', tsID: '92'},
-    
+        { taxSec: '4947(a)(1)', tsID: '92'},    
     ];
 
     for(var i = 0;i<subSec.length;i++){
@@ -249,51 +244,5 @@ function initialSearch(searchT, state, category){
         option.value = i;
         var select = document.getElementById("subSec");
         select.appendChild(option);
-    }
-    
-    
-
-        //on click, set searchTerm's value to user input
-        var searchTerm;
-        var x;
-        var y;
-        var z;
-        $("#searchBtn").click(function(){
-            searchTerm = $("#searchBar").val().replace(/ /g,'%22'); //user input validation that replaces space with %22
-                console.log(searchTerm);
-            //get selector values if user used filter
-            x = document.getElementById("state").value;
-                console.log(usStates[x].abbreviation);
-                searchState = usStates[x].abbreviation;
-            y = document.getElementById("ntee").value;
-                console.log(charityCategory[y].nteeID);
-                searchCategory = charityCategory[y].nteeID;
-            z = document.getElementById("subSec").value;
-                console.log(subSec[z].tsID);
-                searchSubSec = subSec[z].tsID;
-            //user input validation
-            if (x == 0 && y == 0) {
-                $("#modalMsg").html("<p>Please select a State and a Category!</p>");
-                $("#selectorValidation").modal("show");
-            } else if (y == 0) {
-                $("#modalMsg").html("<p>Please select a Category!</p>");
-                $("#selectorValidation").modal("show");
-            } else if (x == 0) {
-                $("#modalMsg").html("<p>Please select a State!</p>");
-                $("#selectorValidation").modal("show");
-            } else {
-                //clears results div first
-                $("#resultDisplay").empty();
-                //run API search function here!!
-                initialSearch(searchTerm, searchState, searchCategory);
-            }
-            
-            
-        });
-    
-    
-    
-    
-
-})
-
+    }    
+});
